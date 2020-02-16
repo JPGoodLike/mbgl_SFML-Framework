@@ -1,6 +1,10 @@
 #include "Game.hpp"
+#include "GlobalSettings.hpp"
+
 #include <iostream>
 
+using namespace mbgl;
+
 int main() {
-    mbgl::Game game(mbgl::Vector2<int>(500, 500), "MyGame");
+    Game game(Vector2<int>(c_screenWidth, c_screenHeight), c_gameTitle);
 }

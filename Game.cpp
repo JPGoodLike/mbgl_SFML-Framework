@@ -3,6 +3,8 @@
 #include "GameData.hpp"
 #include "Scenes/Scenes.hpp"
 
+#include <array>
+
 namespace mbgl {
     std::unique_ptr<GameData> data = std::make_unique<GameData>();
 
@@ -14,12 +16,19 @@ namespace mbgl {
     Game::~Game() = default;
 
     void Game::Run() {
+        // Load scene manager 
         SceneManager& sceneManager = data->sceneManager;
 
-        TestScene* testScene = new TestScene("TestScene");
-        sceneManager.AddScene(testScene->name, testScene);
+        sceneManager.AddScene("TestScene", new TestScene("TestScene"));
         sceneManager.LoadScene("TestScene");
-        
+
+        // Load input manager
+        InputManager& inputManager = data->inputManager;
+        inputManager.AddInputLayer<4>(std::array<char, 4>() = {'w', 'a', 's', 'd'});
+        inputManager.layerMask.none();
+        inputManager.layerMask[0] = true;
+
+        // Game Loop
         float elapsedTime = 0;
         while (data->window.isOpen()) {
             std::unique_ptr<Scene>& currentScene = sceneManager.GetCurrentScene();

@@ -1,6 +1,7 @@
 #include "Scenes.hpp"
 
 #include "../Car.hpp"
+#include "../InputManager.hpp"
 
 namespace mbgl {
     // Test Scene

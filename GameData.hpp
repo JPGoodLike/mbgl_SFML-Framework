@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SceneManager.hpp"
+#include "InputManager.hpp"
 #include "Time.hpp"
 #include "SFML/Graphics.hpp"
 
@@ -10,6 +11,7 @@
 namespace mbgl {
     struct GameData {
         SceneManager sceneManager;
+        InputManager inputManager;
         sf::RenderWindow window;
         Time time;
     };
