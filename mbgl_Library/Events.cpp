@@ -15,7 +15,7 @@ namespace mbgl {
     template <typename Signature>
     using fun = Function<Signature>;
     template <typename Signature, typename ClassT>
-    using delegate = Delegate<Signature>;
+    using delegate = Delegate<Signature, ClassT>;
     template <typename Signature>
     using event = Event<Signature>;
 
@@ -47,8 +47,20 @@ namespace mbgl {
         ClassT* obj;
         ReturnT (ClassT::*mem_fn)(Args...);
     public:
+        Delegate() : obj(nullptr), mem_fn(nullptr) {}
         Delegate(ClassT& obj, ReturnT (ClassT::*mem_fn)(Args...))
         : obj(&obj), mem_fn(mem_fn) {}
+        Delegate(ClassT* obj, ReturnT (ClassT::*mem_fn)(Args...))
+        : obj(obj), mem_fn(mem_fn) {}
+
+        void Bind(ClassT& obj, ReturnT (ClassT::*mem_fn)(Args...)) {
+            this->obj = &obj;
+            this->mem_fn = mem_fn;
+        }
+        void Bind(ClassT* obj, ReturnT (ClassT::*mem_fn)(Args...)) {
+            this->obj = obj;
+            this->mem_fn = mem_fn;
+        }
 
         ReturnT Call(Args... args) override {
             return (obj->*mem_fn)(args...);
@@ -65,17 +77,17 @@ namespace mbgl {
         std::unordered_set<Callable<ReturnT(Args...)>*> delegates;
 
     public:
-        void Add(Callable<ReturnT(Args...)>& fn) {
-            delegates.emplace_back(&fn);
+        void Bind(Callable<ReturnT(Args...)>& fn) {
+            delegates.insert(&fn);
         }
-        void Add(Callable<ReturnT(Args...)>* fn) {
-            delegates.emplace_back(fn);
+        void Bind(Callable<ReturnT(Args...)>* fn) {
+            delegates.insert(fn);
         }
 
-        void Remove(Callable<ReturnT(Args...)>& fn) {
+        void Unbind(Callable<ReturnT(Args...)>& fn) {
             delegates.erase(&fn);
         }
-        void Remove(Callable<ReturnT(Args...)>* fn) {
+        void Unbind(Callable<ReturnT(Args...)>* fn) {
             delegates.erase(fn);
         }
 
@@ -85,17 +97,18 @@ namespace mbgl {
         }
 
         void operator+=(Callable<ReturnT(Args...)>& fn) {
-            Add(&fn);
+            Bind(&fn);
         }
         void operator+=(Callable<ReturnT(Args...)>* fn) {
-            Add(fn);
+            Bind(fn);
         }
 
         void operator-=(Callable<ReturnT(Args...)>& fn) {
-            Remove(&fn);
+            Unbind(&fn);
         }
         void operator-=(Callable<ReturnT(Args...)>* fn) {
-            Remove(fn);
+            Unbind(fn);
+            delete fn;
         }
 
         void operator()(Args... args) {

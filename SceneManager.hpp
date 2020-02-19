@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Scenes/Scene.hpp"
+#include "Scene.hpp"
 
 #include <string>
 #include <map>

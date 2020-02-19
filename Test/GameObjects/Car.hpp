@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GameObject.hpp"
+#include "../../GameObject.hpp"
 
 #include <iostream>
 
@@ -15,5 +15,12 @@ namespace mbgl {
         void Start() override;
         void Update() override;
         void OnDestroy() override;
+
+        void CarKeyPressed();
+        delegate<void(), Car> d_CarKeyPressed;
+        void CarKeyReleased();
+        delegate<void(), Car> d_CarKeyReleased;
+        void CarKeyHold();
+        delegate<void(), Car> d_CarKeyHold;
     };
 }

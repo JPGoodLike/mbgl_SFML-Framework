@@ -3,12 +3,12 @@
 namespace mbgl {
     class Time {
     private:
-        float frameStartTime;
-        float timeBetFrames;
+        float frameStartTime = 0;
+        float timeBetFrames = 0;
 
     public:
         sf::Clock time;
-        float deltaTime;
+        float deltaTime = 0;
 
         float fixedDeltaTime = 1.0f / 30;
 

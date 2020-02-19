@@ -1,7 +1,7 @@
 #include "Scene.hpp"
 
-#include "../GameObject.hpp"
-#include "../GameData.hpp"
+#include "GameObject.hpp"
+#include "GameData.hpp"
 #include "SFML/Graphics.hpp"
 
 namespace mbgl {
@@ -40,11 +40,19 @@ namespace mbgl {
 
     void Scene::HandleEvents() {}
     void Scene::HandleInput() {
+        data->inputManager.OnKey();
         sf::Event e;
         while (data->window.pollEvent(e))
         {
             if (e.type == sf::Event::Closed)
                 data->window.close();
+                
+            if (e.type == sf::Event::KeyPressed) {
+                data->inputManager.OnKeyDown(e.key.code);
+            }
+            if (e.type == sf::Event::KeyReleased) {
+                data->inputManager.OnKeyUp(e.key.code);
+            }
         }
     }
     void Scene::Update() {
