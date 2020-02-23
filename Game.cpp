@@ -16,12 +16,6 @@ namespace mbgl {
     Game::~Game() = default;
 
     void Game::Run() {
-        // Load scene manager 
-        SceneManager& sceneManager = data->sceneManager;
-
-        sceneManager.AddScene("TestScene", new TestScene("TestScene"));
-        sceneManager.LoadScene("TestScene");
-
         // Load input manager
         InputManager& inputManager = data->inputManager;
         data->window.setKeyRepeatEnabled(false);
@@ -30,6 +24,12 @@ namespace mbgl {
         // });
         inputManager.AddInputLayer();
         inputManager.ToggleInputLayer(0, true);
+        
+        // Load scene manager 
+        SceneManager& sceneManager = data->sceneManager;
+
+        sceneManager.AddScene("TestScene", new TestScene("TestScene"));
+        sceneManager.LoadScene("TestScene");
 
         // Game Loop
         float elapsedTime = 0;
@@ -38,7 +38,7 @@ namespace mbgl {
 
             data->time.ResetDeltaTime();
 
-            currentScene->GameObjectStart();
+            currentScene->GameObjectCreate();
 
             currentScene->HandleEvents();
             currentScene->HandleInput();

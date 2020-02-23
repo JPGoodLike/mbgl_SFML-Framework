@@ -1,16 +1,17 @@
 #pragma once
 
-#include "../../GameObject.hpp"
+#include "../../RenderObject2D.hpp"
 
 #include <iostream>
 
 namespace mbgl {
-    class Car : public GameObject {
+    class Car : public RenderObject2D {
     public:
         float speed;
-        int q = 0;
+        float angularSpeed;
+        vec2 direction = vec2(1, 0);
 
-        Car(std::string name, float speed);
+        Car(std::string name, float speed, float angularSpeed);
 
         void Start() override;
         void Update() override;

@@ -2,6 +2,8 @@
 
 #include "GameObject.hpp"
 #include "GameData.hpp"
+#include "Math/Transform.hpp"
+#include "Renderable2D.hpp"
 #include "SFML/Graphics.hpp"
 
 namespace mbgl {
@@ -18,29 +20,41 @@ namespace mbgl {
         for (auto& gameObject : gameObjects)
             delete gameObject;
         gameObjects.clear();
+        if (data->mainCamera != nullptr) {
+            delete data->mainCamera;
+            data->mainCamera = nullptr;
+        }
     }
 
     void Scene::AddGameObject(GameObject* gameObject) {
-        onStartSubs.push(gameObject);
+        onCreateSubs.push(gameObject);
     }
     void Scene::RemoveGameObject(GameObject* gameObject) { // this does NOT call delete
         onDestroySubs.push(gameObject);
     }
 
-    void Scene::GameObjectStart() {
-        while (!onStartSubs.empty()) { 
-            GameObject* gameObject = onStartSubs.top();            
-            gameObjects.insert(onStartSubs.top());
+    void Scene::AddRenderable2D(Renderable2D* renderable) {
+        renderables.insert(renderable);
+    }
+    void Scene::RemoveRenderable2D(Renderable2D* renderable) {
+        renderables.erase(renderable);
+    }
 
+    void Scene::GameObjectCreate() {
+        while (!onCreateSubs.empty()) { 
+            GameObject* gameObject = onCreateSubs.top();            
+            gameObjects.insert(onCreateSubs.top());
+
+            gameObject->OnCreate();
             gameObject->Start();
 
-            onStartSubs.pop();
+            onCreateSubs.pop();
         }
     }
 
     void Scene::HandleEvents() {}
     void Scene::HandleInput() {
-        data->inputManager.OnKey();
+        data->inputManager.Key();
         sf::Event e;
         while (data->window.pollEvent(e))
         {
@@ -48,10 +62,10 @@ namespace mbgl {
                 data->window.close();
                 
             if (e.type == sf::Event::KeyPressed) {
-                data->inputManager.OnKeyDown(e.key.code);
+                data->inputManager.KeyDown(e.key.code);
             }
             if (e.type == sf::Event::KeyReleased) {
-                data->inputManager.OnKeyUp(e.key.code);
+                data->inputManager.KeyUp(e.key.code);
             }
         }
     }
@@ -65,8 +79,12 @@ namespace mbgl {
     }
     void Scene::Render() {
         data->window.clear();
-        for (auto& gameObject : gameObjects)
-            gameObject->Render();
+        for (auto& renderable : renderables) {
+            renderable->sprite.setPosition(Transform::ToPointOnScreen(renderable->position, data->mainCamera));
+            renderable->sprite.setRotation(renderable->rotation.z);
+            renderable->sprite.setScale(renderable->scale);
+            data->window.draw(renderable->sprite);
+        }
         data->window.display();
     }
 

@@ -29,14 +29,37 @@ namespace mbgl {
         keys[keycode].OnKey -= c;
     }
 
+    void InputLayer::BindOnAnyKeyDown(Callable<void(sf::Keyboard::Key)>& c) {
+        OnAnyKeyDown += c;
+    }
+    void InputLayer::BindOnAnyKeyUp(Callable<void(sf::Keyboard::Key)>& c) {
+        OnAnyKeyUp += c;
+    }
+    void InputLayer::BindOnAnyKey(Callable<void(sf::Keyboard::Key)>& c) {
+        OnAnyKey += c;
+    }
+    void InputLayer::UnbindOnAnyKeyDown(Callable<void(sf::Keyboard::Key)>& c) {
+        OnAnyKeyDown -= c;
+    }
+    void InputLayer::UnbindOnAnyKeyUp(Callable<void(sf::Keyboard::Key)>& c) {
+        OnAnyKeyUp -= c;
+    }
+    void InputLayer::UnbindOnAnyKey(Callable<void(sf::Keyboard::Key)>& c) {
+        OnAnyKey -= c;
+    }
+
+
     void InputLayer::OnKeyDown(sf::Keyboard::Key keycode) {
         keys[keycode].OnKeyDown();
+        OnAnyKeyDown(keycode);
     }
     void InputLayer::OnKeyUp(sf::Keyboard::Key keycode) {
         keys[keycode].OnKeyUp();
+        OnAnyKeyUp(keycode);
     }
     void InputLayer::OnKey(sf::Keyboard::Key keycode) {
         keys[keycode].OnKey();
+        OnAnyKey(keycode);
     }
 
     // Input Manager
@@ -62,7 +85,11 @@ namespace mbgl {
         return false;
     }
 
-    void InputManager::OnKeyDown(sf::Keyboard::Key keycode) {
+    std::unordered_set<sf::Keyboard::Key>& InputManager::KeysDown() {
+        return heldKeys;
+    }
+
+    void InputManager::KeyDown(sf::Keyboard::Key keycode) {
         if ((int)keycode > -1 && (int)keycode < sf::Keyboard::KeyCount) {
             isKeyDownMask[keycode] = true;
             heldKeys.insert(keycode);
@@ -72,7 +99,7 @@ namespace mbgl {
         }
     }
 
-    void InputManager::OnKeyUp(sf::Keyboard::Key keycode) {
+    void InputManager::KeyUp(sf::Keyboard::Key keycode) {
         if ((int)keycode > -1 && (int)keycode < sf::Keyboard::KeyCount) {
             isKeyDownMask[keycode] = false;
             heldKeys.erase(keycode);
@@ -82,7 +109,7 @@ namespace mbgl {
         }
     }
 
-    void InputManager::OnKey() {
+    void InputManager::Key() {
         for (auto& layerI : activeLayers) {
             for (auto& keycode : heldKeys)
                 inputLayers[layerI].OnKey(keycode);

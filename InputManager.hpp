@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mbgl_Library/Events.cpp"
+#include "Util/Events.hpp"
 
 #include "SFML/Graphics.hpp"
 
@@ -20,6 +20,9 @@ namespace mbgl {
     class InputLayer {
     private:
         std::vector<KeyEvents> keys;
+        event<void(sf::Keyboard::Key)> OnAnyKeyDown;
+        event<void(sf::Keyboard::Key)> OnAnyKeyUp;
+        event<void(sf::Keyboard::Key)> OnAnyKey;
 
     public:
         InputLayer();
@@ -37,6 +40,13 @@ namespace mbgl {
         void UnbindOnKeyDown(Callable<void()>& c, sf::Keyboard::Key keycode);
         void UnbindOnKeyUp(Callable<void()>& c, sf::Keyboard::Key keycode);
         void UnbindOnKey(Callable<void()>& c, sf::Keyboard::Key keycode);
+
+        void BindOnAnyKeyDown(Callable<void(sf::Keyboard::Key)>& c);
+        void BindOnAnyKeyUp(Callable<void(sf::Keyboard::Key)>& c);
+        void BindOnAnyKey(Callable<void(sf::Keyboard::Key)>& c);
+        void UnbindOnAnyKeyDown(Callable<void(sf::Keyboard::Key)>& c);
+        void UnbindOnAnyKeyUp(Callable<void(sf::Keyboard::Key)>& c);
+        void UnbindOnAnyKey(Callable<void(sf::Keyboard::Key)>& c);
 
         void OnKeyDown(sf::Keyboard::Key keycode);
         void OnKeyUp(sf::Keyboard::Key keycode);
@@ -66,8 +76,9 @@ namespace mbgl {
         void ToggleInputLayer(unsigned int index, bool value);
 
         bool IsKeyDown(sf::Keyboard::Key keycode);
-        void OnKeyDown(sf::Keyboard::Key keycode);
-        void OnKeyUp(sf::Keyboard::Key keycode);
-        void OnKey();
+        std::unordered_set<sf::Keyboard::Key>& KeysDown();
+        void KeyDown(sf::Keyboard::Key keycode);
+        void KeyUp(sf::Keyboard::Key keycode);
+        void Key();
     };
 }

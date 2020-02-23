@@ -1,0 +1,6 @@
+
+1) create and delete game objects ONLY with Instantiate() and Destroy()
+
+2) you CAN instantiate objects in Start() or delete in OnDestroy(), because onCreateSubs and OnDestroySubs
+are made with stack
+

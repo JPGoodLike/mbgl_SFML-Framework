@@ -7,4 +7,6 @@ namespace mbgl{
 
     const int c_screenWidth = 500;
     const int c_screenHeight = 500;
+
+    const int c_pixelPerUnit = 128;
 }

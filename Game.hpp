@@ -2,7 +2,7 @@
 
 #include "SceneManager.hpp"
 
-#include "mbgl_Library/Vectors.cpp"
+#include "Math/Vectors.hpp"
 
 #include <string>
 
