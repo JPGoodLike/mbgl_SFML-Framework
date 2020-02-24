@@ -2,8 +2,9 @@
 
 #include "GameObject.hpp"
 #include "GameData.hpp"
-#include "Math/Transform.hpp"
+#include "Math/Transformable.hpp"
 #include "Renderable2D.hpp"
+#include "Camera2D.hpp"
 #include "SFML/Graphics.hpp"
 
 namespace mbgl {
@@ -42,11 +43,11 @@ namespace mbgl {
 
     void Scene::GameObjectCreate() {
         while (!onCreateSubs.empty()) { 
-            GameObject* gameObject = onCreateSubs.top();            
-            gameObjects.insert(onCreateSubs.top());
+            GameObject* gameObject = onCreateSubs.front();            
+            gameObjects.insert(onCreateSubs.front());
 
+            gameObject->Init();
             gameObject->OnCreate();
-            gameObject->Start();
 
             onCreateSubs.pop();
         }
@@ -80,7 +81,7 @@ namespace mbgl {
     void Scene::Render() {
         data->window.clear();
         for (auto& renderable : renderables) {
-            renderable->sprite.setPosition(Transform::ToPointOnScreen(renderable->position, data->mainCamera));
+            renderable->sprite.setPosition(Transformable::ToPointOnScreen(renderable->position, data->mainCamera));
             renderable->sprite.setRotation(renderable->rotation.z);
             renderable->sprite.setScale(renderable->scale);
             data->window.draw(renderable->sprite);
@@ -90,9 +91,10 @@ namespace mbgl {
 
     void Scene::GameObjectDestroy() {
         while (!onDestroySubs.empty()) { 
-            GameObject* gameObject = onDestroySubs.top();
+            GameObject* gameObject = onDestroySubs.front();
 
             gameObject->OnDestroy();
+            gameObject->Shutdown();
 
             gameObjects.erase(gameObject);
             delete gameObject;

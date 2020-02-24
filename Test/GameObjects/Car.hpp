@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../RenderObject2D.hpp"
+#include "RenderObject2D.hpp"
 
 #include <iostream>
 
@@ -13,7 +13,7 @@ namespace mbgl {
 
         Car(std::string name, float speed, float angularSpeed);
 
-        void Start() override;
+        void OnCreate() override;
         void Update() override;
         void OnDestroy() override;
 

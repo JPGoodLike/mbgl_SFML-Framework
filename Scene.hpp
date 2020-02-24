@@ -2,7 +2,7 @@
 
 #include <string>
 #include <memory>
-#include <stack>
+#include <queue>
 #include <set>
 #include <unordered_set>
 
@@ -17,8 +17,8 @@ namespace mbgl {
         std::unordered_set<GameObject*> gameObjects;
         std::set<Renderable2D*> renderables;
 
-        std::stack<GameObject*> onCreateSubs;
-        std::stack<GameObject*> onDestroySubs;
+        std::queue<GameObject*> onCreateSubs;
+        std::queue<GameObject*> onDestroySubs;
     
     public:
         std::string name;
@@ -32,8 +32,8 @@ namespace mbgl {
         virtual void AddGameObject(GameObject* gameObject);
         virtual void RemoveGameObject(GameObject* gameObject);
 
-        virtual void AddRenderable2D(Renderable2D* renderable); // use only in OnCreate() method
-        virtual void RemoveRenderable2D(Renderable2D* renderable); // use only in OnDestroy() method
+        virtual void AddRenderable2D(Renderable2D* renderable); // use only in Init() method
+        virtual void RemoveRenderable2D(Renderable2D* renderable); // use only in Shutdown() method
 
         virtual void GameObjectCreate();
 

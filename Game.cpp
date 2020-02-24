@@ -33,6 +33,7 @@ namespace mbgl {
 
         // Game Loop
         float elapsedTime = 0;
+        data->time.ResetDeltaTime();
         while (data->window.isOpen()) {
             std::unique_ptr<Scene>& currentScene = sceneManager.GetCurrentScene();
 

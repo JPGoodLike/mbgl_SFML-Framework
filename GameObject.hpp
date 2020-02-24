@@ -10,10 +10,12 @@ namespace mbgl {
         std::string name;
 
         GameObject(std::string name="GameObject");
-        ~GameObject();
+        virtual ~GameObject();
+
+        virtual void Init();
+        virtual void Shutdown();
 
         virtual void OnCreate();
-        virtual void Start();
         virtual void Update();
         virtual void FixedUpdate();
         virtual void OnDestroy();

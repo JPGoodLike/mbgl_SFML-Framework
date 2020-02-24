@@ -6,8 +6,10 @@ namespace mbgl {
     : name(name) {}
     GameObject::~GameObject() = default;
 
+    void GameObject::Init() {}
+    void GameObject::Shutdown() {}
+
     void GameObject::OnCreate() {}
-    void GameObject::Start() {}
     void GameObject::Update() {}
     void GameObject::FixedUpdate() {}
     void GameObject::OnDestroy() {}

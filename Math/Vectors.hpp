@@ -15,6 +15,8 @@ namespace mbgl {
         T x, y;
         Vector2(T x = 0, T y = 0)
         : x(x), y(y) {}
+        // Vector2(const sf::Vector2<T> v)
+        // : x(v.x), y(v.y) {}
 
         T Magnitude() const {
             return sqrt(pow(this->x, 2) + pow(this->y, 2));
@@ -67,16 +69,19 @@ namespace mbgl {
         }
 
         template <typename S>
-        operator Vector2<S>() {
+        operator Vector2<S>() const {
             return Vector2<S>((S)x, (S)y);
         }
         template <typename S>
-        operator sf::Vector2<S>() {
+        operator sf::Vector2<S>() const {
             return sf::Vector2<S>((S)x, (S)y);
         }
 
         static Vector2 Zero() {
             return Vector2(0, 0);
+        }
+        static Vector2 One() {
+            return Vector2(1, 1);
         }
     };
 
@@ -86,8 +91,12 @@ namespace mbgl {
         T x, y, z;
         Vector3(T x = 0, T y = 0, T z = 0)
         : x(x), y(y), z(z) {}
-        Vector3(Vector2<T> v)
+        // Vector3(const sf::Vector3<T> v)
+        // : x(v.x), y(v.y), z(v.z) {}
+        Vector3(const Vector2<T> v)
         : x(v.x), y(v.y), z(0) {}
+        // Vector3(const sf::Vector2<T> v)
+        // : x(v.x), y(v.y), z(0) {}
 
         T Magnitude() const {
             return sqrt(x*x + y*y + z*z);
@@ -157,6 +166,9 @@ namespace mbgl {
 
         static Vector3 Zero() {
             return Vector3(0, 0, 0);
+        }
+        static Vector3 One() {
+            return Vector3(1, 1, 1);
         }
     };
 

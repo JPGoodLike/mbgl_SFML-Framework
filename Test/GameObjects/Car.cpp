@@ -1,5 +1,7 @@
 #include "Car.hpp"
 
+#include "Camera2D.hpp"
+
 #include <iostream>
 
 using namespace std;
@@ -11,14 +13,14 @@ namespace mbgl {
         // d_CarKeyReleased.Bind(this, &Car::CarKeyReleased);
         // d_CarKeyHold.Bind(this, &Car::CarKeyHold);
 
-        sf::Texture& carTexture = data->assetManager.GetTexture("CarSprite");
+        sf::Texture& carTexture = data->assetManager.GetTexture("CarTexture");
         sprite.setTexture(carTexture);
         sprite.setOrigin(vec2(carTexture.getSize().x, carTexture.getSize().y) / 2);
 
-        scale = vec3(0.1, 0.1, 0);
+        scale = vec3(0.1, 0.1, 1);
     }
 
-    void Car::Start() {
+    void Car::OnCreate() {
         InputLayer& il = data->inputManager.inputLayers[0];
         // il.BindOnKeyDown(d_CarKeyPressed, sf::Keyboard::A);
         // il.BindOnKeyUp(d_CarKeyReleased, sf::Keyboard::A);
@@ -31,9 +33,11 @@ namespace mbgl {
         float dt = data->time.deltaTime;
         if (im.IsKeyDown(sf::Keyboard::W)) {
             position += direction * speed * dt;
+            data->mainCamera->position = position;
         }
         if (im.IsKeyDown(sf::Keyboard::S)) {
             position -= direction * speed * dt;
+            data->mainCamera->position = position;
         }
         if (im.IsKeyDown(sf::Keyboard::A)) {
             rotation.z -= angularSpeed * dt;
@@ -46,7 +50,6 @@ namespace mbgl {
     }
 
     void Car::OnDestroy() {
-        data->sceneManager.GetCurrentScene()->RemoveRenderable2D(this);
         cout << "Car was destroyed" << endl;
     }
 

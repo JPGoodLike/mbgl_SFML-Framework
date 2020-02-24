@@ -1,4 +1,4 @@
-#include "../../GameObject.hpp"
+#include "GameObject.hpp"
 
 #include <iostream>
 
@@ -10,7 +10,7 @@ namespace mbgl {
             d_LogIsButtonPressed.Bind(this, &TestObject::LogIsButtonPressed);
         }
 
-        void Start() override {
+        void OnCreate() override {
             data->inputManager.inputLayers[0].BindOnKeyDown(d_LogIsButtonPressed, sf::Keyboard::A);
         }
 
