@@ -1,7 +1,6 @@
 #include "Game.hpp"
 
 #include "GameData.hpp"
-#include "Scenes.hpp"
 
 #include <array>
 
@@ -19,17 +18,11 @@ namespace mbgl {
         // Load input manager
         InputManager& inputManager = data->inputManager;
         data->window.setKeyRepeatEnabled(false);
-        // inputManager.AddInputLayer<4>(std::array<sf::Keyboard::Key, 4>() = {
-        //     sf::Keyboard::Key::W, sf::Keyboard::Key::A, sf::Keyboard::Key::S, sf::Keyboard::Key::D
-        // });
-        inputManager.AddInputLayer();
-        inputManager.ToggleInputLayer(0, true);
+        InputInit(inputManager);
         
         // Load scene manager 
         SceneManager& sceneManager = data->sceneManager;
-
-        sceneManager.AddScene("TestScene", new TestScene("TestScene"));
-        sceneManager.LoadScene("TestScene");
+        ScenesInit(sceneManager);
 
         // Game Loop
         float elapsedTime = 0;

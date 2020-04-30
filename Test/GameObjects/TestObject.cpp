@@ -11,7 +11,7 @@ namespace mbgl {
         }
 
         void OnCreate() override {
-            data->inputManager.inputLayers[0].BindOnKeyDown(d_LogIsButtonPressed, sf::Keyboard::A);
+            data->inputManager.GetInputLayer(0).BindOnKeyDown(d_LogIsButtonPressed, sf::Keyboard::A);
         }
 
         void LogIsButtonPressed() {

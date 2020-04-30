@@ -15,8 +15,9 @@ namespace mbgl {
         T x, y;
         Vector2(T x = 0, T y = 0)
         : x(x), y(y) {}
-        // Vector2(const sf::Vector2<T> v)
-        // : x(v.x), y(v.y) {}
+        template <typename S>
+        Vector2(const sf::Vector2<S> v)
+        : x((T)v.x), y((T)v.y) {}
 
         T Magnitude() const {
             return sqrt(pow(this->x, 2) + pow(this->y, 2));
@@ -174,9 +175,11 @@ namespace mbgl {
 
     using vec2 = Vector2<float>;
     using vec2i = Vector2<int>;
+    using vec2u = Vector2<unsigned int>;    
     using vec2d = Vector2<double>;
 
     using vec3 = Vector3<float>;
     using vec3i = Vector3<int>;
+    using vec3u = Vector3<unsigned int>;    
     using vec3d = Vector3<double>;
 }

@@ -1,0 +1,6 @@
+
+Future improvements:
+1. Rebuild using ESC pattern
+2. Reduce v-table usage (events in Input Manager can be only use static funtions, 
+so there will be no need for using dynamic poly. for callables)
+3. Add parallelism

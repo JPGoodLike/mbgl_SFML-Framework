@@ -4,8 +4,11 @@
 #include "GameData.hpp"
 #include "Math/Transformable.hpp"
 #include "Renderable2D.hpp"
+#include "RenderObject2D.hpp"
 #include "Camera2D.hpp"
 #include "SFML/Graphics.hpp"
+
+#include <iostream>
 
 namespace mbgl {
     Scene::Scene(std::string name)
@@ -35,10 +38,10 @@ namespace mbgl {
     }
 
     void Scene::AddRenderable2D(Renderable2D* renderable) {
-        renderables.insert(renderable);
+        renderables.push_back(renderable);
     }
     void Scene::RemoveRenderable2D(Renderable2D* renderable) {
-        renderables.erase(renderable);
+        renderables.erase(std::find(renderables.begin(), renderables.end(), renderable));
     }
 
     void Scene::GameObjectCreate() {
@@ -55,7 +58,7 @@ namespace mbgl {
 
     void Scene::HandleEvents() {}
     void Scene::HandleInput() {
-        data->inputManager.Key();
+        data->inputManager.KeyUpdate();
         sf::Event e;
         while (data->window.pollEvent(e))
         {
@@ -71,18 +74,28 @@ namespace mbgl {
         }
     }
     void Scene::Update() {
-        for (auto& gameObject : gameObjects)
-            gameObject->Update();
+        for (auto& gameObject : gameObjects) {
+            if (gameObject->isActive)
+                gameObject->Update();
+        }
     }
     void Scene::FixedUpdate() {
-        for (auto& gameObject : gameObjects)
-            gameObject->FixedUpdate();
+        for (auto& gameObject : gameObjects) {
+            if (gameObject->isActive)
+                gameObject->FixedUpdate();
+        }
     }
     void Scene::Render() {
         data->window.clear();
+        if (wasRenderOrderChange) {
+            std::sort(renderables.begin(), renderables.end(), Renderable2DComparator());
+            wasRenderOrderChange = false;
+        }
         for (auto& renderable : renderables) {
+            if (!((RenderObject2D*)renderable)->isActive)
+                continue;
             renderable->sprite.setPosition(Transformable::ToPointOnScreen(renderable->position, data->mainCamera));
-            renderable->sprite.setRotation(renderable->rotation.z);
+            renderable->sprite.setRotation(renderable->rotation.z - data->mainCamera->rotation.z);
             renderable->sprite.setScale(renderable->scale);
             data->window.draw(renderable->sprite);
         }
@@ -100,5 +113,9 @@ namespace mbgl {
             delete gameObject;
             onDestroySubs.pop();
         }
+    }
+
+    bool Renderable2DComparator::operator() (const Renderable2D* self, const Renderable2D* other) const {
+        return self->position.z > other->position.z;
     }
 }

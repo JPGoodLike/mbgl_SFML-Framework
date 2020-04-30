@@ -15,6 +15,7 @@ namespace mbgl {
         Instantiate(new Camera2D("Main Camera"));
         Instantiate(new Car("Some Car", 5, 100));
         Instantiate(new Box("Some Box", vec2(5, 0)));
+        Instantiate(new Box("Another Box", vec2(1, 0)));
         
         // Instantiate(new TestObject("Test Object"));
     }

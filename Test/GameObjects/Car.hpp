@@ -10,6 +10,7 @@ namespace mbgl {
         float speed;
         float angularSpeed;
         vec2 direction = vec2(1, 0);
+        bool isCameraAttached = false;
 
         Car(std::string name, float speed, float angularSpeed);
 
@@ -17,11 +18,7 @@ namespace mbgl {
         void Update() override;
         void OnDestroy() override;
 
-        void CarKeyPressed();
-        delegate<void(), Car> d_CarKeyPressed;
-        void CarKeyReleased();
-        delegate<void(), Car> d_CarKeyReleased;
-        void CarKeyHold();
-        delegate<void(), Car> d_CarKeyHold;
+        void CarToggleActive();
+        delegate<void(), Car> d_CarToggleActive;
     };
 }

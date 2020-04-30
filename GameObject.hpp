@@ -6,19 +6,30 @@
 
 namespace mbgl {
     class GameObject {
+    private:
+        bool isActive = true;
+
+    protected:
+        virtual void Init();
+        virtual void Shutdown();
+
+        virtual void OnEnable();
+        virtual void OnDisable();
+
+        virtual void OnCreate();
+        virtual void Update();
+        virtual void FixedUpdate();
+        virtual void OnDestroy();
+
+        friend class Scene;
     public:
         std::string name;
 
         GameObject(std::string name="GameObject");
         virtual ~GameObject();
 
-        virtual void Init();
-        virtual void Shutdown();
-
-        virtual void OnCreate();
-        virtual void Update();
-        virtual void FixedUpdate();
-        virtual void OnDestroy();
+        bool IsActive();
+        void SetActive(bool state);
     };
 
     // add gameObject to scene 

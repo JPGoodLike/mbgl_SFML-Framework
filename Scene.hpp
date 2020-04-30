@@ -3,7 +3,7 @@
 #include <string>
 #include <memory>
 #include <queue>
-#include <set>
+#include <vector>
 #include <unordered_set>
 
 
@@ -12,16 +12,22 @@ namespace mbgl {
     class GameData;
     class Renderable2D;
 
+    struct Renderable2DComparator {
+        bool operator() (const Renderable2D* self, const Renderable2D* other) const;
+    };
+
     class Scene {
     protected:
         std::unordered_set<GameObject*> gameObjects;
-        std::set<Renderable2D*> renderables;
+        std::vector<Renderable2D*> renderables;        
 
         std::queue<GameObject*> onCreateSubs;
         std::queue<GameObject*> onDestroySubs;
-    
+        
     public:
         std::string name;
+
+        bool wasRenderOrderChange = false;
 
         Scene(std::string name);        
         ~Scene();

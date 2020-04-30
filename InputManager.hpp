@@ -56,17 +56,23 @@ namespace mbgl {
     const unsigned int c_inputManagerInputLayerQ = 1;
 
     class InputManager {
-    public:
-        InputManager();
-        ~InputManager() = default;
-
+    private:
         std::vector<InputLayer> inputLayers;
         std::unordered_set<unsigned int> activeLayers;
 
         std::unordered_set<sf::Keyboard::Key> heldKeys;
         std::bitset<c_inputLayerKeyQ> isKeyDownMask;
+        std::bitset<c_inputLayerKeyQ> isKeyUpMask;
+        std::bitset<c_inputLayerKeyQ> isKeyMask;
+
+    public:
+        InputManager();
+        ~InputManager() = default;
 
         void AddInputLayer();
+
+        InputLayer& GetInputLayer(unsigned int index);
+        const std::unordered_set<unsigned int>& GetActiveLayers() const;
         
         // template <int keyQ>
         // void AddInputLayer(std::array<sf::Keyboard::Key, keyQ>& keys) {
@@ -75,10 +81,13 @@ namespace mbgl {
 
         void ToggleInputLayer(unsigned int index, bool value);
 
-        bool IsKeyDown(sf::Keyboard::Key keycode);
-        std::unordered_set<sf::Keyboard::Key>& KeysDown();
+        bool IsKeyDown(sf::Keyboard::Key keycode) const;
+        bool IsKeyUp(sf::Keyboard::Key keycode) const;
+        bool IsKey(sf::Keyboard::Key keycode) const;
+        const std::unordered_set<sf::Keyboard::Key>& HeldKeys() const;
+
         void KeyDown(sf::Keyboard::Key keycode);
         void KeyUp(sf::Keyboard::Key keycode);
-        void Key();
+        void KeyUpdate();
     };
 }

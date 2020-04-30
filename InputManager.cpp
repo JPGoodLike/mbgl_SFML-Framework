@@ -72,6 +72,13 @@ namespace mbgl {
         inputLayers.emplace_back();
     }
 
+    InputLayer& InputManager::GetInputLayer(const unsigned int index) {
+        return inputLayers[index];
+    }
+    const std::unordered_set<unsigned int>& InputManager::GetActiveLayers() const {
+        return activeLayers;
+    }
+
     void InputManager::ToggleInputLayer(unsigned int index, bool value) {
         if (value) {
             activeLayers.insert(index);
@@ -79,19 +86,30 @@ namespace mbgl {
             activeLayers.erase(index);
     }
 
-    bool InputManager::IsKeyDown(sf::Keyboard::Key keycode) {
+    bool InputManager::IsKeyDown(sf::Keyboard::Key keycode) const {
         if ((int)keycode > -1 && (int)keycode < sf::Keyboard::KeyCount)
             return isKeyDownMask[(int)keycode];
         return false;
     }
+    bool InputManager::IsKeyUp(sf::Keyboard::Key keycode) const {
+        if ((int)keycode > -1 && (int)keycode < sf::Keyboard::KeyCount)
+            return isKeyUpMask[(int)keycode];
+        return false;
+    }
+    bool InputManager::IsKey(sf::Keyboard::Key keycode) const {
+        if ((int)keycode > -1 && (int)keycode < sf::Keyboard::KeyCount)
+            return isKeyMask[(int)keycode];
+        return false;
+    }
 
-    std::unordered_set<sf::Keyboard::Key>& InputManager::KeysDown() {
+    const std::unordered_set<sf::Keyboard::Key>& InputManager::HeldKeys() const {
         return heldKeys;
     }
 
     void InputManager::KeyDown(sf::Keyboard::Key keycode) {
         if ((int)keycode > -1 && (int)keycode < sf::Keyboard::KeyCount) {
             isKeyDownMask[keycode] = true;
+            isKeyMask[keycode] = true;
             heldKeys.insert(keycode);
             for (auto& layerI : activeLayers) {
                 inputLayers[layerI].OnKeyDown(keycode);
@@ -101,7 +119,8 @@ namespace mbgl {
 
     void InputManager::KeyUp(sf::Keyboard::Key keycode) {
         if ((int)keycode > -1 && (int)keycode < sf::Keyboard::KeyCount) {
-            isKeyDownMask[keycode] = false;
+            isKeyMask[keycode] = false;
+            isKeyUpMask[keycode] = true;
             heldKeys.erase(keycode);
             for (auto& layerI : activeLayers) {
                 inputLayers[layerI].OnKeyUp(keycode);
@@ -109,7 +128,9 @@ namespace mbgl {
         }
     }
 
-    void InputManager::Key() {
+    void InputManager::KeyUpdate() {
+        isKeyDownMask = 0;
+        isKeyUpMask = 0;
         for (auto& layerI : activeLayers) {
             for (auto& keycode : heldKeys)
                 inputLayers[layerI].OnKey(keycode);
